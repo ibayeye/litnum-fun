@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:litnumfun/screens/final_score.dart';
 
 class LiterasiQoestion1 extends StatefulWidget {
   const LiterasiQoestion1({super.key});
@@ -84,7 +85,12 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
               Padding(
                 padding: EdgeInsets.all(10),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FinalScore()));
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purpleAccent,
                       minimumSize: Size(screenWidth * 1, screenheight * 0.08),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:litnumfun/screens/sigin.dart';
+import 'package:litnumfun/screens/splashScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,11 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-     debugShowCheckedModeBanner: false,
-     routes: {
-      '/sigin':(context) => (const Sigin())
-     },
-     home: const Sigin(),
+      debugShowCheckedModeBanner: false,
+      routes: {'/splashScreens': (context) => (const Splashscreen())},
+      home: const Splashscreen(),
     );
   }
 }

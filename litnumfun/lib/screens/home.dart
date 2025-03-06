@@ -15,21 +15,14 @@ class _HomeState extends State<Home> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Home',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Color(0xFF604CC3),
-      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        color: Color(0XFFFFA725),
+        color: Color(0xFF604CC3),
         child: Column(
           children: [
             Container(
-              margin: EdgeInsets.only(top: 70),
+              margin: EdgeInsets.only(top: screenheight * 0.2),
               width: screenWidth * 0.3,
               height: screenheight * 0.10,
               decoration: BoxDecoration(
@@ -45,17 +38,15 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: screenheight * 0.02,
             ),
-            Text('Esa Kurniawan Putra'),
+            Text(
+              'Esa Kurniawan Putra',
+              style: TextStyle(color: Colors.white),
+            ),
             SizedBox(
               height: screenheight * 0.03,
             ),
-            Text(
-              "Choose your favorite category and \nstart conquering the exciting challenges now!",
-              style: TextStyle(color: Colors.black, fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
             Padding(
-              padding: EdgeInsets.only(top: screenheight * 0.04),
+              padding: EdgeInsets.only(top: screenheight * 0.01),
               child: SvgPicture.asset(
                 'assets/images/litnum.svg',
                 fit: BoxFit.cover,
@@ -64,6 +55,13 @@ class _HomeState extends State<Home> {
             ),
             SizedBox(
               height: screenheight * 0.03,
+            ),
+            Text(
+              "select a game category:",
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            SizedBox(
+              height: screenheight * 0.02,
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
@@ -75,7 +73,7 @@ class _HomeState extends State<Home> {
                             builder: (context) => LiterasiQoestion1()));
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purpleAccent,
+                    backgroundColor: Color(0XFFFFA725),
                     minimumSize: Size(screenWidth * 0.5, screenheight * 0.08),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
