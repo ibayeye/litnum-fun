@@ -3,7 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:litnumfun/screens/literasi_qoestion1.dart';
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  final String name;
+
+  const Home({super.key, required this.name});
 
   @override
   State<Home> createState() => _HomeState();
@@ -18,29 +20,15 @@ class _HomeState extends State<Home> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        color: Color(0xFF604CC3),
+        color: const Color(0xFF604CC3),
         child: Column(
           children: [
-            Container(
-              margin: EdgeInsets.only(top: screenheight * 0.2),
-              width: screenWidth * 0.3,
-              height: screenheight * 0.10,
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.all(
-                  Radius.circular(12.0),
-                ),
-              ),
-              child: SvgPicture.asset(
-                'assets/images/avatar.svg',
-              ),
-            ),
             SizedBox(
-              height: screenheight * 0.02,
+              height: screenheight * 0.1,
             ),
             Text(
-              'Esa Kurniawan Putra',
-              style: TextStyle(color: Colors.white),
+              'Hallo! ${widget.name}',
+              style: const TextStyle(color: Colors.white),
             ),
             SizedBox(
               height: screenheight * 0.03,
@@ -56,8 +44,8 @@ class _HomeState extends State<Home> {
             SizedBox(
               height: screenheight * 0.03,
             ),
-            Text(
-              "select a game category:",
+            const Text(
+              "Pilih salah satu game:",
               style: TextStyle(color: Colors.white, fontSize: 16),
             ),
             SizedBox(
@@ -70,16 +58,16 @@ class _HomeState extends State<Home> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => LiterasiQoestion1()));
+                            builder: (context) => const LiterasiQoestion1()));
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0XFFFFA725),
+                    backgroundColor: const Color(0XFFFFA725),
                     minimumSize: Size(screenWidth * 0.5, screenheight * 0.08),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Literasi',
                     style: TextStyle(color: Colors.white, fontSize: 24),
                   )),
@@ -98,8 +86,8 @@ class _HomeState extends State<Home> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text(
-                    'Numerik',
+                  child:const Text(
+                    'Numerasi',
                     style: TextStyle(color: Colors.white, fontSize: 24),
                   )),
             )

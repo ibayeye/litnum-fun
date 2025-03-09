@@ -15,7 +15,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
     final screenheight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF6C5DB6), Color(0xFF916E39)],
             begin: Alignment.topCenter,
@@ -30,7 +30,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
               Padding(
                 padding: EdgeInsets.only(
                     top: screenheight * 0.1, left: screenWidth * 0.02),
-                child: Align(
+                child: const Align(
                   alignment: Alignment.centerLeft, // Mengatur teks ke kiri
                   child: Text(
                     'Qoestion \n\nNo.1',
@@ -45,14 +45,14 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                 height: screenheight * 0.02,
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Container(
                   width: double.infinity,
                   height: screenheight * 0.2,
                   decoration: BoxDecoration(
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(15)),
-                  child: Column(
+                  child: const Column(
                     children: [
                       Padding(
                         padding: EdgeInsets.all(15),
@@ -64,7 +64,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
@@ -74,7 +74,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Align(
+                    child:const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'A. Membantu siswa dalam menyelesaikan tugas secara cepat',
@@ -83,13 +83,13 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                     )),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding:const EdgeInsets.all(10),
                 child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => FinalScore()));
+                              builder: (context) => const FinalScore()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.purpleAccent,
@@ -98,7 +98,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Align(
+                    child: const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'B. Membantu siswa dalam memahami, menganalisis, dan menerapkan informasi yang diterima',
@@ -107,7 +107,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                     )),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
@@ -117,7 +117,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Align(
+                    child: const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'C. Mempermudah siswa dalam mengikuti ujian',
@@ -126,7 +126,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                     )),
               ),
               Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
@@ -136,7 +136,7 @@ class _LiterasiQoestion1State extends State<LiterasiQoestion1> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: Align(
+                    child: const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'D. Membuat siswa lebih cepat membaca teks panjang',

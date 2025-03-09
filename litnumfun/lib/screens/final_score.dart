@@ -14,7 +14,7 @@ class _FinalScoreState extends State<FinalScore> {
     final screenheight = MediaQuery.of(context).size.height;
     return Scaffold(
         body: Container(
-      decoration: BoxDecoration(color: Color(0xFF604CC3)),
+      decoration: const BoxDecoration(color: Color(0xFF604CC3)),
       child: Container(
         margin: EdgeInsets.symmetric(
             horizontal: screenWidth * 0.1, vertical: screenheight * 0.3),
@@ -26,35 +26,35 @@ class _FinalScoreState extends State<FinalScore> {
         ),
         child: Column(
           children: [
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(30),
               child: Text(
                 'Final Score',
                 style: TextStyle(fontSize: 22),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(10),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text('Name :'),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(10),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text('totally correct :'),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(10),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text('totally wrong :'),
               ),
             ),
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(20),
               child: Text(
                 'TOTAL SCORE',
@@ -67,7 +67,7 @@ class _FinalScoreState extends State<FinalScore> {
             Padding(
               padding: EdgeInsets.symmetric(
                   vertical: 10, horizontal: screenWidth * 0.2),
-              child: Text(
+              child: const Text(
                 '100',
                 style: TextStyle(
                   fontSize: 28,
