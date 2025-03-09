@@ -12,49 +12,49 @@ class Sigin extends StatefulWidget {
 
 class _SiginState extends State<Sigin> {
   final TextEditingController _controller = TextEditingController();
-  final ApiService apiService = ApiService(
-      baseUrl: 'http://localhost:5000/api/v1'); // Ganti dengan URL backend kamu
+  final ApiService apiService = ApiService(baseUrl: 'http://192.168.222.239:5000/api/v1'); // Ganti dengan URL backend kamu
   bool _isLoading = false;
   String? _errorMessage;
 
   Future<void> _handleSubmit() async {
-    final name = _controller.text.trim();
+  final name = _controller.text.trim();
 
-    if (name.isEmpty) {
-      setState(() {
-        _errorMessage = "Nama tidak boleh kosong!";
-      });
-      print(
-          "Error: $_errorMessage"); // Debugging untuk memastikan error message diubah
-      return;
-    }
-
+  if (name.isEmpty) {
     setState(() {
-      _isLoading = true;
-      _errorMessage = null;
+      _errorMessage = "Nama tidak boleh kosong!";
     });
-
-    final response = await apiService.request(
-      endpoint: '/playUser',
-      method: 'POST',
-      body: {'name': name},
-    );
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (response.containsKey('error')) {
-      setState(() {
-        _errorMessage = response['error'];
-      });
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home(name: name)),
-      );
-    }
+    print("Error: $_errorMessage"); // Debugging untuk memastikan error message diubah
+    return;
   }
+
+  setState(() {
+    _isLoading = true;
+    _errorMessage = null;
+  });
+
+  final response = await apiService.request(
+    endpoint: '/playUser',
+    method: 'POST',
+    body: {'name': name},
+  );
+
+  setState(() {
+    _isLoading = false;
+  });
+
+  if (response.containsKey('error')) {
+    setState(() {
+      _errorMessage = response['error'];
+    });
+  } else {
+    Navigator.push(
+      // ignore: use_build_context_synchronously
+      context,
+      MaterialPageRoute(builder: (context) => Home(name: name)),
+    );
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class _SiginState extends State<Sigin> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: SizedBox(
+      body: Container(
         width: double.infinity,
         height: double.infinity,
         child: Column(
@@ -89,7 +89,7 @@ class _SiginState extends State<Sigin> {
                 onPressed: _isLoading ? null : _handleSubmit,
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(screenWidth * 0.9, screenHeight * 0.05),
-                  backgroundColor: const Color(0xFF604CC3),
+                  backgroundColor: Color(0xFF604CC3),
                 ),
                 child: _isLoading
                     ? const CircularProgressIndicator(color: Colors.white)
