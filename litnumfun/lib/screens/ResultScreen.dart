@@ -23,7 +23,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   Future<void> fetchUserResult() async {
     final url = Uri.parse(
-        'http://192.168.202.239:5000/api/v1/userResult/${widget.userName}');
+        'https://litnum.vercel.app/api/v1/userResult/${widget.userName}');
     try {
       final response = await http.get(url);
 

@@ -12,7 +12,7 @@ class Sigin extends StatefulWidget {
 
 class _SiginState extends State<Sigin> {
   final TextEditingController _controller = TextEditingController();
-  final ApiService apiService = ApiService(baseUrl: 'http://192.168.202.239:5000/api/v1'); // Ganti dengan URL backend kamu
+  final ApiService apiService = ApiService(baseUrl: 'https://litnum.vercel.app/api/v1'); // Ganti dengan URL backend kamu
   bool _isLoading = false;
   String? _errorMessage;
 
