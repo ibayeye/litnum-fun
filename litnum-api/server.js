@@ -19,6 +19,9 @@ app.use(morgan("dev"));
 
 // endpoint
 app.use("/api/v1/", userRouter);
+app.get("/", (req, res) => {
+  res.send('hello');
+});
 
 // database
 db();

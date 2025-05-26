@@ -22,7 +22,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   Future<void> fetchAllResults() async {
     try {
       final response = await http.get(
-        Uri.parse('https://litnum.vercel.app/api/v1/allResult'),
+        Uri.parse('https://litnum-backend.vercel.app/api/v1/allResult'),
       );
 
       if (response.statusCode == 200) {

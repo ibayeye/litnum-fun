@@ -173,7 +173,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
       // Kirim ke server
       final response = await http.post(
-        Uri.parse('https://litnum.vercel.app/api/v1/playUser'),
+        Uri.parse('https://litnum-backend.vercel.app/api/v1/playUser'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode(resultData),
       );
