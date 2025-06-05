@@ -51,7 +51,8 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
-  Widget buildInfoCard(IconData icon, String title, String value) {
+  Widget buildInfoCard(IconData icon, String title, String value,
+      {VoidCallback? onTap}) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 3,
@@ -60,7 +61,69 @@ class _ResultScreenState extends State<ResultScreen> {
         leading: Icon(icon, color: Colors.deepPurple),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(value, style: const TextStyle(fontSize: 16)),
+        trailing: onTap != null
+            ? const Icon(Icons.arrow_forward_ios, size: 16)
+            : null,
+        onTap: onTap,
       ),
+    );
+  }
+
+  void showDetailDialog(String title, List<dynamic> items, String type) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 400,
+            child: items.isEmpty
+                ? const Center(child: Text('Tidak ada data'))
+                : ListView.builder(
+                    itemCount: items.length,
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor:
+                                type == 'correct' ? Colors.green : Colors.red,
+                            child: Text(
+                              '${index + 1}',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          title: Text(
+                            item['question'] ?? 'Soal ${index + 1}',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Jawaban: ${item['userAnswer'] ?? '-'}'),
+                              if (type == 'wrong')
+                                Text(
+                                  'Jawaban Benar: ${item['correctAnswer'] ?? '-'}',
+                                  style: const TextStyle(color: Colors.green),
+                                ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Tutup'),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -94,14 +157,42 @@ class _ResultScreenState extends State<ResultScreen> {
                                 color: Colors.deepPurple),
                           ),
                           const SizedBox(height: 20),
-                          buildInfoCard(Icons.menu_book, 'Benar Literasi',
-                              '${userData!['correctLit']}'),
-                          buildInfoCard(Icons.menu_book_outlined,
-                              'Salah Literasi', '${userData!['wrongLit']}'),
-                          buildInfoCard(Icons.calculate, 'Benar Numerasi',
-                              '${userData!['correctNum']}'),
-                          buildInfoCard(Icons.calculate_outlined,
-                              'Salah Numerasi', '${userData!['wrongNum']}'),
+                          buildInfoCard(
+                            Icons.menu_book,
+                            'Benar Literasi',
+                            '${userData!['correctLit']}',
+                            onTap: () => showDetailDialog(
+                                'Soal Literasi yang Benar',
+                                userData!['correctLitQuestions'] ?? [],
+                                'correct'),
+                          ),
+                          buildInfoCard(
+                            Icons.menu_book_outlined,
+                            'Salah Literasi',
+                            '${userData!['wrongLit']}',
+                            onTap: () => showDetailDialog(
+                                'Soal Literasi yang Salah',
+                                userData!['wrongLitQuestions'] ?? [],
+                                'wrong'),
+                          ),
+                          buildInfoCard(
+                            Icons.calculate,
+                            'Benar Numerasi',
+                            '${userData!['correctNum']}',
+                            onTap: () => showDetailDialog(
+                                'Soal Numerasi yang Benar',
+                                userData!['correctNumQuestions'] ?? [],
+                                'correct'),
+                          ),
+                          buildInfoCard(
+                            Icons.calculate_outlined,
+                            'Salah Numerasi',
+                            '${userData!['wrongNum']}',
+                            onTap: () => showDetailDialog(
+                                'Soal Numerasi yang Salah',
+                                userData!['wrongNumQuestions'] ?? [],
+                                'wrong'),
+                          ),
                           buildInfoCard(Icons.grade, 'Skor Literasi',
                               '${userData!['litResult']}%'),
                           buildInfoCard(Icons.grade_outlined, 'Skor Numerasi',

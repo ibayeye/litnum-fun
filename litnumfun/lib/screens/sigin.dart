@@ -12,49 +12,51 @@ class Sigin extends StatefulWidget {
 
 class _SiginState extends State<Sigin> {
   final TextEditingController _controller = TextEditingController();
-  final ApiService apiService = ApiService(baseUrl: 'https://litnum-backend.vercel.app/api/v1'); // Ganti dengan URL backend kamu
+  final ApiService apiService = ApiService(
+      baseUrl:
+          'https://litnum-backend.vercel.app/api/v1'); // Ganti dengan URL backend kamu
   bool _isLoading = false;
   String? _errorMessage;
 
   Future<void> _handleSubmit() async {
-  final name = _controller.text.trim();
+    final name = _controller.text.trim();
 
-  if (name.isEmpty) {
+    if (name.isEmpty) {
+      setState(() {
+        _errorMessage = "Nama tidak boleh kosong!";
+      });
+      print(
+          "Error: $_errorMessage"); // Debugging untuk memastikan error message diubah
+      return;
+    }
+
     setState(() {
-      _errorMessage = "Nama tidak boleh kosong!";
+      _isLoading = true;
+      _errorMessage = null;
     });
-    print("Error: $_errorMessage"); // Debugging untuk memastikan error message diubah
-    return;
-  }
 
-  setState(() {
-    _isLoading = true;
-    _errorMessage = null;
-  });
-
-  final response = await apiService.request(
-    endpoint: '/playUser',
-    method: 'POST',
-    body: {'name': name},
-  );
-
-  setState(() {
-    _isLoading = false;
-  });
-
-  if (response.containsKey('error')) {
-    setState(() {
-      _errorMessage = response['error'];
-    });
-  } else {
-    Navigator.push(
-      // ignore: use_build_context_synchronously
-      context,
-      MaterialPageRoute(builder: (context) => Home(name: name)),
+    final response = await apiService.request(
+      endpoint: '/playUser',
+      method: 'POST',
+      body: {'name': name},
     );
-  }
-}
 
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (response.containsKey('error')) {
+      setState(() {
+        _errorMessage = response['error'];
+      });
+    } else {
+      Navigator.push(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(builder: (context) => Home(name: name)),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,10 +70,18 @@ class _SiginState extends State<Sigin> {
         child: Column(
           children: [
             SvgPicture.asset(
-              'assets/images/siginbg.svg',
+              'assets/images/siginbg-new.svg',
               fit: BoxFit.cover,
             ),
             SizedBox(height: screenHeight * 0.1),
+            // const Text(
+            //   'SDN 013 PASIR KALIKI BANDUNG',
+            //   style: TextStyle(
+            //       color: Color(0xFF604CC3),
+            //       fontSize: 22,
+            //       fontWeight: FontWeight.bold),
+            // ),
+            // SizedBox(height: screenHeight * 0.1),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
               child: TextField(

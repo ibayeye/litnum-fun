@@ -1,21 +1,57 @@
 ﻿soal;option_a;option_b;option_c;option_d;jawaban
-Hasil panen kedelai akan dikemas dalam karung. Satu karung dapat menampung 50 kg. Banyak karung yang diperlukan adalah .... (1 ton = 1.000kg);80;600;800;1500;B
-Pedosfer adalah lapisan terluar Bumi yang menjadi tempat terjadinya proses pembentukan tanah. Lapisan ini terletak pada antarmuka litosfer, atmosfer, hidrosfer, dan biosfer. Adapun total permukaan tanah saat ini adalah 14 persen dari luas total permukaan Bumi, dan dari jumlah tersebut, hanya 5 persen yang ditanami tumbuhan. Hitunglah luas permukaan bumi yang ditanami tumbuhan!;0,7 persen;0,5 persen;14 persen;19 persen;A
-Anto memiliki sebuah kebun dengan panjang 12 meter dan lebar 7 meter. Ani juga memiliki kebun dengan ukuran yang sama dengan kebun milik Anto. Anto dan Ani ingin membuat pagar untuk mengelilingi kebun-kebun itu. Berapa meter panjang keseluruhan pagar yang dibutuhkan Anto dan Ani?;84 m;76 m;38 m;31 m;B
-Pak Beni sedang membuat kolam dengan ukuran panjang 6 meter, lebar 3 meter, dan kedalaman 1,5 meter. Bagian dinding dan lantai kolam hendak dipasang keramik dengan ukuran 30 cm x 30 cm.;300 buah;400 buah;500 buah;600 buah;C
+"Hasil panen kedelai sebanyak 48.000 kg akan dikemas dalam karung. Satu karung dapat menampung 6
+ton kedelai. Banyak karung yang diperlukan adalah ....
+(1 ton = 1.000 kg)";8;6;80;15;A
+"Pedosfer adalah lapisan terluar Bumi yang menjadi tempat terjadinya proses pembentukan tanah.
+Lapisan ini terletak pada antarmuka litosfer, atmosfer, hidrosfer, dan biosfer. Adapun total permukaan
+tanah saat ini adalah 14 persen dari luas total permukaan Bumi, dan dari jumlah tersebut, hanya 5 persen
+yang ditanami tumbuhan.
+Hitunglah luas permukaan bumi yang ditanami tumbuhan!";0,7 persen;0,5 persen;14 persen;19 persen;A
+"Anto memiliki sebuah kebun dengan panjang 12 meter dan lebar 7 meter. Ani juga memiliki kebun
+dengan ukuran yang sama dengan kebun milik Anto.
+Anto dan Ani ingin membuat pagar untuk mengelilingi kebun-kebun itu. Berapa meter Panjang
+keseluruhan pagar yang dibutuhkan Anto dan Ani?";84 m;76 m;38 m;31 m;B
+"Pak Beni sedang membuat kolam dengan ukuran panjang 6 meter, lebar 3 meter, dan kedalaman 1,5
+meter. Bagian dinding dan lantai kolam hendak dipasang keramik dengan ukuran 30 cm x 30 cm.
+Jumlah keramik yang diperlukan Pak Beni adalah?";300 buah;400 buah;500 buah;600 buah;C
 Ibu membeli 3 lusin pensil. Berapa jumlah pensil yang dibeli Ibu?;24;36;48;60;B
-Berapa hasil dari 4 Ã— (6 + 3)?;24;30;36;42;B
-Sebuah toko menjual 15 buku tulis setiap hari. Berapa jumlah buku tulis yang terjual dalam 2 minggu?;105;210;315;420;A
+Berapa hasil dari 4 x (6 + 3)?;24;32;36;42;C
+"Sebuah toko menjual 15 buku tulis setiap hari. Berapa jumlah buku tulis yang terjual dalam 2
+minggu?";105;210;315;420;B
 Sebuah taman berbentuk persegi memiliki panjang sisi 12 meter. Berapa keliling taman tersebut?;24 m;36 m;48 m;60 m;C
-Pak Didi ingin memasang pagar di sekeliling tanah berbentuk persegi panjang dengan panjang 15 meter dan lebar 10 meter. Berapa meter pagar yang dibutuhkan?;25 m;30 m;40 m;50 m;C
-Sebuah tabung memiliki jari-jari 7 cm dan tinggi 10 cm. Berapa volume tabung tersebut? Gunakan Ï€ = 22/7;1540 cmÂ³;1400 cmÂ³;1320 cmÂ³;1200 cmÂ³;A
-Tinggi sebuah pohon adalah 4.25 meter. Jika ditulis dalam bentuk desimal maka tinggi pohon tersebut adalah…;4,2 m;4,25 m;4,50 m;4,75 m;B
-Sebuah toko roti menjual 120 roti dalam 4 hari. Jika setiap hari toko menjual jumlah roti yang sama, berapa roti yang terjual setiap hari?;20;25;30;35;C
-Hasil panen kedelai akan dikemas dalam karung. Satu karung dapat menampung 50 kg. Banyak karung yang diperlukan adalah .... (1 ton = 1.000kg);80;600;800;1500;B
-Anita sedang menemani Ibunya menjaga toko. la bermain dengan kalkulator yang ada di meja kasir. Dia mengetik sebuah angka kemudian mengalikannya dengan angka 5. Setelah itu, dia menekan tombol tambah dan angka 15. Kalkulator menunjukkan angka 50. Namun, Anita lupa angka pertama yang dimasukkannya. Berapa angka pertama tersebut?;5;7;9;11;B
-Bu Dina adalah seorang guru Matematika di SD Prestasi. Bu dina bertugas mengajar 98 siswa kelas 5 yang terbagi dalam empat kelas. Pelajaran Matematika diadakan setiap hari Senin sampai Jumat dengan durasi 1 jam setiap sesinya. Berapa jam Ibu Dina mengajar setiap minggunya?;4 jam;5 jam;20 jam;28 jam;C
-Setiap 70 menit melakukan pembelajaran daring Budi mengistirahatkan diri dan melakukan  olahraga ringan selama 5 menit. Hari ini, Budi mulai kelas daring pada pukul 08.00 dan selesai pada pukul 14.01. Berapa kali budi beristirahat selama pembelajaran daring pada hari ini?;3 kali;4 kali;5 kali;6 kali;B
-Ibu Lina membeli 2 kg apel dengan harga Rp 20.000 per kg dan 3 kg jeruk dengan harga Rp 15.000 per kg. Berapa total uang yang harus dibayarkan?;58;75;90;85;A
-Rudi dan Dina bermain kelereng bersama. Rudi memiliki 45 kelereng, dan Dina memiliki 30 kelereng. Mereka ingin membagi kelereng mereka secara merata ke dalam 5 kotak. Berapa banyak kelereng di setiap kotak?;40;69;75;34;A
-Rina berangkat ke sekolah dengan bersepeda sejauh 15 km. Jika Rina mengayuh sepeda dengan kecepatan 10 km per jam, berapa lama waktu yang diperlukan Rina untuk sampai di sekolah?;2 Jam;1,5 Jam;2,5 Jam;3 jam;A
-Seorang ayah mendapatkan uang bonus dari tempat bekerja sebesar Rp 26.000.000 dan berencana semua uang tersebut akan diberikan kepada keempat anaknya. Jika setiap anak mendapatkan uang sebesar Rp 1.000.000 lebih banyak daripada saudaranya yang lebih muda di bawahnya, maka pernyataan berikut ini yang paling tepat adalah.....;Anak kedua mendapatkan uang sejumlah Rp 7.000.000.;Uang yang diterima anak keempat setengah dari yang diterima anak pertama.;Uang yang diterima anak pertama sama dengan jumlah uang yang diterima dua kali anak;Anak kedua menerima seperempat uang dari yang diterima anak pertama.;A
+"Pak Didi ingin memasang pagar di sekeliling tanah berbentuk persegi panjang dengan panjang 15
+meter dan lebar 10 meter. Berapa meter pagar yang dibutuhkan?";25 m;30 m;40 m;50 m;D
+Sebuah tabung memiliki jari-jari 7 cm dan tinggi 10 cm. Berapa volume tabung tersebut?;1540 cm²;1400 cm²;1320 cm²;1200 cm²;A
+"Tinggi sebuah pohon adalah 4,25 meter. Jika ditulis dalam bentuk desimal, maka tinggi pohon
+tersebut adalah…";4,2 m;4,25 m;4,50 m;4,75 m;B
+"Sebuah toko roti menjual 120 roti dalam 4 hari. Jika setiap hari toko menjual jumlah roti yang
+sama, berapa roti yang terjual setiap hari?";20;25;30;35;C
+"Setiap hewan memiliki kecepatan berlari berbeda-beda. Informasi berikut ini memuat jarak dan
+waktu tempuh beberapa hewan saat berlari:
+- Antelope: Mampu menempuh jarak 98 km dalam waktu 60 menit
+- Rusa: Mampu menempuh jarak 35 km dalam waktu 30 menit
+- Kelinci coklat: Mampu menempuh jarak 12 km dalam waktu 10 menit
+- Cheetah: Mampu menempuh jarak 25 km dalam waktu 15 menit";70 km/jam;60 km/jam;80 km/jam;100 km/jam;D
+"Anita sedang menemani Ibunya menjaga toko. la bermain dengan kalkulator yang ada di meja
+kasir. Dia mengetik sebuah angka kemudian mengalikannya dengan angka 5. Setelah itu, dia
+menekan tombol tambah dan angka 15. Kalkulator menunjukkan angka 50.
+Namun, Anita lupa angka pertama yang dimasukkannya. Berapa angka pertama tersebut?";5;7;9;11;B
+"Bu Dina adalah seorang guru Matematika di SD Prestasi. Bu dina bertugas mengajar 98 siswa kelas
+5 yang terbagi dalam empat kelas. Pelajaran Matematika diadakan setiap hari Senin sampai Jumat
+dengan durasi 1 jam setiap sesinya.
+Berapa jam Ibu Dina mengajar setiap minggunya?";4 jam;5 jam;20 jam;28 jam;B
+"Setiap 70 menit melakukan pembelajaran daring Budi mengistirahatkan diri dan melakukan
+olahraga ringan selama 5 menit. Hari ini, Budi mulai kelas daring pada pukul 08.00 dan selesai
+pada pukul 14.01.
+Berapa kali budi beristirahat selama pembelajaran daring pada hari ini?";3 kali;4 kali;5 kali;6 kali;C
+"Ibu Lina membeli 2 kg apel dengan harga Rp 20.000 per kg dan 3 kg jeruk dengan harga Rp 15.000
+per kg. Berapa total uang yang harus dibayarkan?";58;75;90;85;D
+"Rudi dan Dina bermain kelereng bersama. Rudi memiliki 45 kelereng, dan Dina memiliki 30
+kelereng. Mereka ingin membagi kelereng mereka secara merata ke dalam 5 kotak. Berapa banyak
+kelereng di setiap kotak?";40;69;15;34;C
+"Rina berangkat ke sekolah dengan bersepeda sejauh 15 km. Jika Rina mengayuh sepeda dengan
+kecepatan 10 km per jam, berapa lama waktu yang diperlukan Rina untuk sampai di sekolah?";2 Jam;1,5 Jam;2,5 Jam;3 jam;B
+"Seorang ayah mendapatkan uang bonus dari tempat bekerja sebesar Rp 26.000.000 dan
+berencana semua uang tersebut akan diberikan kepada keempat anaknya.
+Jika setiap anak mendapatkan uang sebesar Rp 1.000.000 lebih banyak daripada saudaranya yang
+lebih muda di bawahnya, maka pernyataan berikut ini yang paling tepat adalah.....";Anak kedua mendapatkan uang sejumlah Rp 7.000.000.;Uang yang diterima anak keempat setengah dari yang diterima anak pertama.;Uang yang diterima anak pertama sama dengan jumlah uang yang diterima dua kali anak;Anak kedua menerima seperempat uang dari yang diterima anak pertama.;A
