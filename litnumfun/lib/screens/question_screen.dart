@@ -32,6 +32,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
   int _correctNum = 0;
   int _wrongNum = 0;
 
+  // List untuk menyimpan detail jawaban
+  List<Map<String, dynamic>> _litAnswerDetails = [];
+  List<Map<String, dynamic>> _numAnswerDetails = [];
+
   @override
   void initState() {
     super.initState();
@@ -98,6 +102,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _correctNum = 0;
     _wrongNum = 0;
 
+    // Clear previous answer details
+    _litAnswerDetails.clear();
+    _numAnswerDetails.clear();
+
     for (var i = 0; i < _questions.length; i++) {
       final question = _questions[i];
       final userAnswer = _userAnswers[question.id];
@@ -106,11 +114,22 @@ class _QuestionScreenState extends State<QuestionScreen> {
       if (userAnswer != null && userAnswer.isNotEmpty) {
         final bool isCorrect = _isAnswerCorrect(question, userAnswer);
 
+        // Buat detail jawaban
+        Map<String, dynamic> answerDetail = {
+          "questionId": "q_${question.id}",
+          "questionNumber": question.id,
+          "question": question.soal,
+          "userAnswer": userAnswer,
+          "correctAnswer": question.jawaban.trim(),
+          "isCorrect": isCorrect
+        };
+
         // Debug untuk melihat apakah logika kategori bekerja
         print(
             'Question ${question.id}, Category: ${question.category}, isCorrect: $isCorrect');
 
         if (question.category.toLowerCase() == 'numerasi') {
+          _numAnswerDetails.add(answerDetail);
           if (isCorrect) {
             _correctNum++;
             print('Increment correctNum to $_correctNum');
@@ -118,6 +137,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
             _wrongNum++;
           }
         } else if (question.category.toLowerCase() == 'literasi') {
+          _litAnswerDetails.add(answerDetail);
           if (isCorrect) {
             _correctLit++;
             print('Increment correctLit to $_correctLit');
@@ -127,9 +147,20 @@ class _QuestionScreenState extends State<QuestionScreen> {
         }
       } else {
         // Jika tidak dijawab, dianggap salah
+        Map<String, dynamic> answerDetail = {
+          "questionId": "q_${question.id}",
+          "questionNumber": question.id,
+          "question": question.soal,
+          "userAnswer": "Tidak dijawab",
+          "correctAnswer": question.jawaban.trim(),
+          "isCorrect": false
+        };
+
         if (question.category.toLowerCase() == 'numerasi') {
+          _numAnswerDetails.add(answerDetail);
           _wrongNum++;
         } else {
+          _litAnswerDetails.add(answerDetail);
           _wrongLit++;
         }
       }
@@ -151,45 +182,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
     });
 
     try {
-      // Buat data dasar yang selalu dikirim
-      final Map<String, dynamic> resultData = {
-        'name': widget.userName,
-      };
+      // 1. Kirim hasil skor terlebih dahulu (API yang sudah ada)
+      await _submitScoreResults();
 
-      // Tambahkan data berdasarkan kategori yang sedang dikerjakan
-      if (widget.category == 'Literasi') {
-        resultData['correctLit'] = _correctLit;
-        resultData['wrongLit'] = _wrongLit;
-        resultData['litResult'] = _correctLit > 0
-            ? (_correctLit / (_correctLit + _wrongLit)) * 100
-            : 0;
-      } else if (widget.category == 'Numerasi') {
-        resultData['correctNum'] = _correctNum;
-        resultData['wrongNum'] = _wrongNum;
-        resultData['numResult'] = _correctNum > 0
-            ? (_correctNum / (_correctNum + _wrongNum)) * 100
-            : 0;
-      }
+      // 2. Kirim detail jawaban
+      await _submitAnswerDetails();
 
-      // Kirim ke server
-      final response = await http.post(
-        Uri.parse('https://litnum-backend.vercel.app/api/v1/playUser'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(resultData),
-      );
-
-      // Logging untuk debugging
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
-      // Ubah pengecekan respons untuk menerima status 200 & 201
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        setState(() {
-          _quizCompleted = true;
-        });
-      } else {
-        throw Exception("Gagal menyimpan hasil. Kode: ${response.statusCode}");
-      }
+      setState(() {
+        _quizCompleted = true;
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal mengirim data: ${e.toString()}')),
@@ -198,6 +199,75 @@ class _QuestionScreenState extends State<QuestionScreen> {
       setState(() {
         _isSubmitting = false;
       });
+    }
+  }
+
+  // Fungsi untuk mengirim skor (API yang sudah ada)
+  Future<void> _submitScoreResults() async {
+    // Buat data dasar yang selalu dikirim
+    final Map<String, dynamic> resultData = {
+      'name': widget.userName,
+    };
+
+    // Tambahkan data berdasarkan kategori yang sedang dikerjakan
+    if (widget.category == 'Literasi') {
+      resultData['correctLit'] = _correctLit;
+      resultData['wrongLit'] = _wrongLit;
+      resultData['litResult'] =
+          _correctLit > 0 ? (_correctLit / (_correctLit + _wrongLit)) * 100 : 0;
+    } else if (widget.category == 'Numerasi') {
+      resultData['correctNum'] = _correctNum;
+      resultData['wrongNum'] = _wrongNum;
+      resultData['numResult'] =
+          _correctNum > 0 ? (_correctNum / (_correctNum + _wrongNum)) * 100 : 0;
+    }
+
+    // Kirim ke server
+    final response = await http.post(
+      Uri.parse('https://litnum-backend.vercel.app/api/v1/playUser'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(resultData),
+    );
+
+    // Logging untuk debugging
+    print('Score Response status: ${response.statusCode}');
+    print('Score Response body: ${response.body}');
+
+    // Ubah pengecekan respons untuk menerima status 200 & 201
+    if (response.statusCode != 201 && response.statusCode != 200) {
+      throw Exception("Gagal menyimpan skor. Kode: ${response.statusCode}");
+    }
+  }
+
+  // Fungsi untuk mengirim detail jawaban (API baru)
+  Future<void> _submitAnswerDetails() async {
+    final Map<String, dynamic> answerData = {
+      'name': widget.userName,
+    };
+
+    // Tambahkan detail jawaban berdasarkan kategori
+    if (widget.category == 'Literasi') {
+      answerData['litQuestions'] = _litAnswerDetails;
+      answerData['numQuestions'] = []; // Kosong untuk literasi
+    } else if (widget.category == 'Numerasi') {
+      answerData['litQuestions'] = []; // Kosong untuk numerasi
+      answerData['numQuestions'] = _numAnswerDetails;
+    }
+
+    // Kirim detail jawaban ke API baru
+    final response = await http.post(
+      Uri.parse('https://litnum-backend.vercel.app/api/v1/saveAnswers'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(answerData),
+    );
+
+    print('Answer Details Response status: ${response.statusCode}');
+    print('Answer Details Response body: ${response.body}');
+
+    if (response.statusCode != 200) {
+      print(
+          'Warning: Gagal menyimpan detail jawaban. Kode: ${response.statusCode}');
+      // Tidak throw error karena ini optional, skor sudah tersimpan
     }
   }
 
@@ -359,6 +429,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
               CircularProgressIndicator(),
               SizedBox(height: 20),
               Text("Menyimpan hasil..."),
+              SizedBox(height: 10),
+              Text("Mohon tunggu sebentar",
+                  style: TextStyle(color: Colors.grey)),
             ],
           ),
         ),
@@ -413,9 +486,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
             _buildAnswerOption(question.id, "B", question.optionB),
             _buildAnswerOption(question.id, "C", question.optionC),
             _buildAnswerOption(question.id, "D", question.optionD),
-
-            // Hapus atau sesuaikan penggunaan Spacer jika menyebabkan overflow
-            // const Spacer(),
 
             // Indikator jawaban
             Padding(

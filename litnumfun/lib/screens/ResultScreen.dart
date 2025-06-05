@@ -22,8 +22,8 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   Future<void> fetchUserResult() async {
-    final url = Uri.parse(
-        'https://litnum-backend.vercel.app/api/v1/userResult/${widget.userName}');
+    final url =
+        Uri.parse('https://litnum-backend.vercel.app/api/v1/userResult/${widget.userName}');
     try {
       final response = await http.get(url);
 
@@ -91,7 +91,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             backgroundColor:
                                 type == 'correct' ? Colors.green : Colors.red,
                             child: Text(
-                              '${index + 1}',
+                              '${item['questionNumber'] ?? index + 1}', // ✅ di sini ubah
                               style: const TextStyle(color: Colors.white),
                             ),
                           ),
