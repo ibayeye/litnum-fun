@@ -10,6 +10,12 @@ class ResultScreen extends StatefulWidget {
   State<ResultScreen> createState() => _ResultScreenState();
 }
 
+String formatDuration(int seconds) {
+  final int minutes = seconds ~/ 60;
+  final int remainingSeconds = seconds % 60;
+  return "$minutes menit $remainingSeconds detik";
+}
+
 class _ResultScreenState extends State<ResultScreen> {
   Map<String, dynamic>? userData;
   bool isLoading = true;
@@ -22,8 +28,8 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   Future<void> fetchUserResult() async {
-    final url =
-        Uri.parse('https://litnum-backend.vercel.app/api/v1/userResult/${widget.userName}');
+    final url = Uri.parse(
+        'https://litnum-backend.vercel.app/api/v1/userResult/${widget.userName}');
     try {
       final response = await http.get(url);
 
@@ -91,7 +97,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             backgroundColor:
                                 type == 'correct' ? Colors.green : Colors.red,
                             child: Text(
-                              '${item['questionNumber'] ?? index + 1}', // ✅ di sini ubah
+                              '${item['questionNumber'] ?? index + 1}',
                               style: const TextStyle(color: Colors.white),
                             ),
                           ),
@@ -129,6 +135,11 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Hitung total durasi di sini
+    final int durationLit = userData?['durationLitInSeconds'] ?? 0;
+    final int durationNum = userData?['durationNumInSeconds'] ?? 0;
+    final int totalDuration = durationLit + durationNum;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Hasil Akhir')),
       body: Center(
@@ -193,6 +204,22 @@ class _ResultScreenState extends State<ResultScreen> {
                                 userData!['wrongNumQuestions'] ?? [],
                                 'wrong'),
                           ),
+                          // Cards durasi yang sudah diperbaiki
+                          buildInfoCard(
+                            Icons.timer,
+                            'Waktu Menyelesaikan Soal',
+                            formatDuration(totalDuration),
+                          ),
+                          // buildInfoCard(
+                          //   Icons.timer_sharp,
+                          //   'Waktu Menyelesaikan Literasi',
+                          //   formatDuration(durationLit),
+                          // ),
+                          // buildInfoCard(
+                          //   Icons.timer,
+                          //   'Waktu Menyelesaikan Numerasi',
+                          //   formatDuration(durationNum),
+                          // ),
                           buildInfoCard(Icons.grade, 'Skor Literasi',
                               '${userData!['litResult']}%'),
                           buildInfoCard(Icons.grade_outlined, 'Skor Numerasi',

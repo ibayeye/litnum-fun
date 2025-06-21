@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter/services.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({Key? key}) : super(key: key);
@@ -12,11 +17,365 @@ class LeaderboardScreen extends StatefulWidget {
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
   List<dynamic> users = [];
   bool isLoading = true;
+  bool isDownloadingAll = false;
 
   @override
   void initState() {
     super.initState();
     fetchAllResults();
+  }
+
+  // Download semua hasil siswa
+  void _downloadAllResults() async {
+    setState(() {
+      isDownloadingAll = true;
+    });
+
+    try {
+      const url = 'https://litnum-backend.vercel.app/api/v1/export/all';
+
+      // Tampilkan loading
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
+              SizedBox(width: 16),
+              Text('Mengunduh semua hasil siswa...'),
+            ],
+          ),
+          duration:
+              Duration(seconds: 30), // Loading lebih lama untuk semua data
+        ),
+      );
+
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Gunakan app-specific directory (tidak butuh permission)
+        Directory directory;
+
+        if (Platform.isAndroid) {
+          // Gunakan getExternalStorageDirectory untuk app-specific external storage
+          directory = await getExternalStorageDirectory() ??
+              await getApplicationDocumentsDirectory();
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+
+        final fileName =
+            'semua_hasil_siswa_${DateTime.now().millisecondsSinceEpoch}.csv';
+        final file = File('${directory.path}/$fileName');
+        await file.writeAsBytes(response.bodyBytes);
+
+        // Hilangkan loading snackbar
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+        // Tampilkan dialog sukses dengan opsi
+        _showDownloadAllSuccessDialog(file.path);
+      } else {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal mendownload file semua hasil')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    } finally {
+      setState(() {
+        isDownloadingAll = false;
+      });
+    }
+  }
+
+  void _showDownloadAllSuccessDialog(String filePath) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green),
+              SizedBox(width: 8),
+              Text('Berhasil!'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('File semua hasil siswa telah diunduh.'),
+              const SizedBox(height: 12),
+              Text(
+                'File: ${filePath.split('/').last}',
+                style:
+                    const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Total siswa: ${users.length}',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Pilih aksi:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton.icon(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(Icons.close),
+              label: const Text('Tutup'),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _openFile(filePath);
+              },
+              icon: Icon(Icons.open_in_new),
+              label: const Text('Buka'),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _shareFile(filePath);
+              },
+              icon: Icon(Icons.share),
+              label: const Text('Bagikan'),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _copyPath(filePath);
+              },
+              icon: Icon(Icons.copy),
+              label: const Text('Copy Path'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _downloadUserResult(String name) async {
+    try {
+      final encodedName = Uri.encodeComponent(name);
+      final url =
+          'https://litnum-backend.vercel.app/api/v1/export/$encodedName';
+
+      // Tampilkan loading
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Row(
+            children: [
+              CircularProgressIndicator(
+                backgroundColor: Colors.white,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              ),
+              SizedBox(width: 16),
+              Text('Mengunduh file...'),
+            ],
+          ),
+        ),
+      );
+
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Gunakan app-specific directory (tidak butuh permission)
+        Directory directory;
+
+        if (Platform.isAndroid) {
+          // Gunakan getExternalStorageDirectory untuk app-specific external storage
+          directory = await getExternalStorageDirectory() ??
+              await getApplicationDocumentsDirectory();
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+
+        final fileName =
+            'hasil_${name.replaceAll(' ', '_')}_${DateTime.now().millisecondsSinceEpoch}.csv';
+        final file = File('${directory.path}/$fileName');
+        await file.writeAsBytes(response.bodyBytes);
+
+        // Hilangkan loading snackbar
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+        // Tampilkan dialog sukses dengan opsi
+        _showDownloadSuccessDialog(file.path, name);
+      } else {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal mendownload file')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  void _showDownloadSuccessDialog(String filePath, String userName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green),
+              SizedBox(width: 8),
+              Text('Berhasil!'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('File hasil untuk $userName telah diunduh.'),
+              const SizedBox(height: 12),
+              Text(
+                'File: ${filePath.split('/').last}',
+                style:
+                    const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Pilih aksi:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton.icon(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: Icon(Icons.close),
+              label: const Text('Tutup'),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _openFile(filePath);
+              },
+              icon: Icon(Icons.open_in_new),
+              label: const Text('Buka'),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _shareFile(filePath);
+              },
+              icon: Icon(Icons.share),
+              label: const Text('Bagikan'),
+            ),
+            TextButton.icon(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _copyPath(filePath);
+              },
+              icon: Icon(Icons.copy),
+              label: const Text('Copy Path'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _openFile(String filePath) async {
+    try {
+      final result = await OpenFile.open(filePath);
+      if (result.type != ResultType.done) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Tidak dapat membuka file. Pastikan ada aplikasi Excel/WPS Office.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error membuka file: $e')),
+      );
+    }
+  }
+
+  void _shareFile(String filePath) async {
+    try {
+      final file = File(filePath);
+
+      // Cek apakah file exists
+      if (!await file.exists()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('File tidak ditemukan')),
+        );
+        return;
+      }
+
+      // Coba beberapa cara sharing
+      await _shareFileWithMultipleMethods(file);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error berbagi file: $e')),
+      );
+    }
+  }
+
+  Future<void> _shareFileWithMultipleMethods(File file) async {
+    try {
+      // Method 1: Share with proper MIME type
+      final xFile = XFile(
+        file.path,
+        mimeType: 'text/csv',
+        name: file.path.split('/').last,
+      );
+
+      await Share.shareXFiles(
+        [xFile],
+        text: 'File Hasil Literasi Numerasi',
+        subject: 'Hasil Literasi Numerasi - ${file.path.split('/').last}',
+      );
+    } catch (e) {
+      // Method 2: Fallback - share as generic file
+      try {
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          text:
+              'File Hasil Literasi Numerasi\n\nCatatan: File ini adalah dokumen CSV. Bisa dibuka dengan Excel atau aplikasi spreadsheet lainnya.',
+        );
+      } catch (e2) {
+        // Method 3: Copy to clipboard as alternative
+        await _copyPath(file.path);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Path file telah disalin ke clipboard. Anda bisa menggunakan file manager untuk mencari dan membagikan file.'),
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _copyPath(String filePath) async {
+    await Clipboard.setData(ClipboardData(text: filePath));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Path file disalin ke clipboard'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   Future<void> fetchAllResults() async {
@@ -60,35 +419,111 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Leaderboard'),
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: users.length,
-              itemBuilder: (context, index) {
-                final user = users[index];
-                return Card(
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: getRankColor(index),
-                      child: Text(
-                        '${index + 1}',
-                        style: const TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
+        actions: [
+          // Tombol download semua hasil
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: isDownloadingAll
+                ? const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                       ),
                     ),
-                    title: Text(
-                      user['name'],
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle:
-                        Text('Skor: ${user['allResult'].toStringAsFixed(2)}%'),
+                  )
+                : IconButton(
+                    onPressed: users.isEmpty ? null : _downloadAllResults,
+                    icon: const Icon(Icons.download_for_offline),
+                    tooltip: 'Download semua hasil siswa',
                   ),
-                );
-              },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Header info dan tombol download semua
+          if (users.isNotEmpty) ...[
+            Container(
+              margin: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.info_outline, color: Colors.blue.shade700),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Total ${users.length} siswa • Tap tombol ⬇ di AppBar untuk download semua hasil',
+                      style: TextStyle(
+                        color: Colors.blue.shade700,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
+          ],
+
+          // List siswa
+          Expanded(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : users.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'Tidak ada data leaderboard',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: users.length,
+                        itemBuilder: (context, index) {
+                          final user = users[index];
+                          return Card(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            elevation: 2,
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: getRankColor(index),
+                                child: Text(
+                                  '${index + 1}',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              title: Text(
+                                user['name'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Text(
+                                  'Skor: ${user['allResult'].toStringAsFixed(2)}%'),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.download,
+                                    color: Colors.blue),
+                                tooltip: 'Download hasil ${user['name']}',
+                                onPressed: () {
+                                  _downloadUserResult(user['name']);
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+          ),
+        ],
+      ),
     );
   }
 }

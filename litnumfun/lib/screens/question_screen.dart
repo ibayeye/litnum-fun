@@ -32,6 +32,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
   int _correctNum = 0;
   int _wrongNum = 0;
 
+  late DateTime _startTime;
+  late DateTime _endTime;
+  Duration _totalDuration = Duration.zero;
+
   // List untuk menyimpan detail jawaban
   List<Map<String, dynamic>> _litAnswerDetails = [];
   List<Map<String, dynamic>> _numAnswerDetails = [];
@@ -39,6 +43,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   @override
   void initState() {
     super.initState();
+    _startTime = DateTime.now();
     _loadQuestions();
   }
 
@@ -182,11 +187,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
     });
 
     try {
+      _endTime = DateTime.now();
+      _totalDuration = _endTime.difference(_startTime);
+      
       // 1. Kirim hasil skor terlebih dahulu (API yang sudah ada)
       await _submitScoreResults();
 
       // 2. Kirim detail jawaban
       await _submitAnswerDetails();
+
 
       setState(() {
         _quizCompleted = true;
@@ -215,11 +224,13 @@ class _QuestionScreenState extends State<QuestionScreen> {
       resultData['wrongLit'] = _wrongLit;
       resultData['litResult'] =
           _correctLit > 0 ? (_correctLit / (_correctLit + _wrongLit)) * 100 : 0;
+      resultData['durationLitInSeconds'] = _totalDuration.inSeconds;
     } else if (widget.category == 'Numerasi') {
       resultData['correctNum'] = _correctNum;
       resultData['wrongNum'] = _wrongNum;
       resultData['numResult'] =
           _correctNum > 0 ? (_correctNum / (_correctNum + _wrongNum)) * 100 : 0;
+      resultData['durationNumInSeconds'] = _totalDuration.inSeconds;
     }
 
     // Kirim ke server
