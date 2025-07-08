@@ -1,11 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+// Conditional imports
+import 'dart:io' if (dart.library.html) 'dart:html' as html;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:flutter/services.dart';
+
+import '../helpers/web_downloader_stub.dart'
+    if (dart.library.html) '../helpers/web_downloader.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({Key? key}) : super(key: key);
@@ -25,7 +33,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     fetchAllResults();
   }
 
-  // Download semua hasil siswa
+  // Download semua hasil siswa - Universal function
   void _downloadAllResults() async {
     setState(() {
       isDownloadingAll = true;
@@ -47,35 +55,29 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               Text('Mengunduh semua hasil siswa...'),
             ],
           ),
-          duration:
-              Duration(seconds: 30), // Loading lebih lama untuk semua data
+          duration: Duration(seconds: 30),
         ),
       );
 
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        // Gunakan app-specific directory (tidak butuh permission)
-        Directory directory;
-
-        if (Platform.isAndroid) {
-          // Gunakan getExternalStorageDirectory untuk app-specific external storage
-          directory = await getExternalStorageDirectory() ??
-              await getApplicationDocumentsDirectory();
-        } else {
-          directory = await getApplicationDocumentsDirectory();
-        }
-
         final fileName =
             'semua_hasil_siswa_${DateTime.now().millisecondsSinceEpoch}.csv';
-        final file = File('${directory.path}/$fileName');
-        await file.writeAsBytes(response.bodyBytes);
+
+        if (kIsWeb) {
+          // Untuk web browser
+          _downloadForWeb(response.bodyBytes, fileName);
+        } else {
+          // Untuk mobile
+          await _downloadForMobile(response.bodyBytes, fileName);
+        }
 
         // Hilangkan loading snackbar
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
 
-        // Tampilkan dialog sukses dengan opsi
-        _showDownloadAllSuccessDialog(file.path);
+        // Tampilkan dialog sukses
+        _showDownloadAllSuccessDialog();
       } else {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -94,7 +96,38 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     }
   }
 
-  void _showDownloadAllSuccessDialog(String filePath) {
+  // Download untuk web browser
+  void _downloadForWeb(List<int> bytes, String filename) {
+    downloadFileWeb(bytes, filename);
+  }
+
+  // Download untuk mobile
+  Future<void> _downloadForMobile(List<int> bytes, String filename) async {
+    if (!kIsWeb) {
+      try {
+        // Gunakan app-specific directory
+        Directory directory;
+        if (Platform.isAndroid) {
+          directory = await getExternalStorageDirectory() ??
+              await getApplicationDocumentsDirectory();
+        } else {
+          directory = await getApplicationDocumentsDirectory();
+        }
+
+        final file = File('${directory.path}/$filename');
+        await file.writeAsBytes(bytes);
+
+        // Tampilkan dialog dengan opsi untuk mobile
+        _showDownloadMobileSuccessDialog(file.path);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error saving file: $e')),
+        );
+      }
+    }
+  }
+
+  void _showDownloadAllSuccessDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -110,7 +143,52 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('File semua hasil siswa telah diunduh.'),
+              Text(kIsWeb
+                  ? 'File semua hasil siswa telah diunduh ke folder Downloads.'
+                  : 'File semua hasil siswa telah diunduh.'),
+              const SizedBox(height: 8),
+              Text(
+                'Total siswa: ${users.length}',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+              ),
+              if (kIsWeb) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Periksa folder Downloads di komputer Anda.',
+                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                ),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDownloadMobileSuccessDialog(String filePath) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green),
+              SizedBox(width: 8),
+              Text('Berhasil!'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('File telah diunduh.'),
               const SizedBox(height: 12),
               Text(
                 'File: ${filePath.split('/').last}',
@@ -191,27 +269,25 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
-        // Gunakan app-specific directory (tidak butuh permission)
-        Directory directory;
-
-        if (Platform.isAndroid) {
-          // Gunakan getExternalStorageDirectory untuk app-specific external storage
-          directory = await getExternalStorageDirectory() ??
-              await getApplicationDocumentsDirectory();
-        } else {
-          directory = await getApplicationDocumentsDirectory();
-        }
-
         final fileName =
             'hasil_${name.replaceAll(' ', '_')}_${DateTime.now().millisecondsSinceEpoch}.csv';
-        final file = File('${directory.path}/$fileName');
-        await file.writeAsBytes(response.bodyBytes);
 
-        // Hilangkan loading snackbar
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        if (kIsWeb) {
+          // Download untuk web
+          _downloadForWeb(response.bodyBytes, fileName);
 
-        // Tampilkan dialog sukses dengan opsi
-        _showDownloadSuccessDialog(file.path, name);
+          // Hilangkan loading snackbar
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+          // Tampilkan dialog sukses untuk web
+          _showDownloadWebSuccessDialog(name);
+        } else {
+          // Download untuk mobile
+          await _downloadForMobile(response.bodyBytes, fileName);
+
+          // Hilangkan loading snackbar
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        }
       } else {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -226,7 +302,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     }
   }
 
-  void _showDownloadSuccessDialog(String filePath, String userName) {
+  void _showDownloadWebSuccessDialog(String userName) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -242,49 +318,20 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('File hasil untuk $userName telah diunduh.'),
+              Text(
+                  'File hasil untuk $userName telah diunduh ke folder Downloads.'),
               const SizedBox(height: 12),
               Text(
-                'File: ${filePath.split('/').last}',
+                'Periksa folder Downloads di komputer Anda.',
                 style:
                     const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Pilih aksi:',
-                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ],
           ),
           actions: [
-            TextButton.icon(
+            TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              icon: Icon(Icons.close),
-              label: const Text('Tutup'),
-            ),
-            TextButton.icon(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _openFile(filePath);
-              },
-              icon: Icon(Icons.open_in_new),
-              label: const Text('Buka'),
-            ),
-            TextButton.icon(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _shareFile(filePath);
-              },
-              icon: Icon(Icons.share),
-              label: const Text('Bagikan'),
-            ),
-            TextButton.icon(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _copyPath(filePath);
-              },
-              icon: Icon(Icons.copy),
-              label: const Text('Copy Path'),
+              child: const Text('OK'),
             ),
           ],
         );
@@ -292,77 +339,54 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     );
   }
 
+  // Fungsi-fungsi untuk mobile (hanya berjalan di mobile)
   void _openFile(String filePath) async {
-    try {
-      final result = await OpenFile.open(filePath);
-      if (result.type != ResultType.done) {
+    if (!kIsWeb) {
+      try {
+        final result = await OpenFile.open(filePath);
+        if (result.type != ResultType.done) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                  'Tidak dapat membuka file. Pastikan ada aplikasi Excel/WPS Office.'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Tidak dapat membuka file. Pastikan ada aplikasi Excel/WPS Office.'),
-            duration: Duration(seconds: 3),
-          ),
+          SnackBar(content: Text('Error membuka file: $e')),
         );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error membuka file: $e')),
-      );
     }
   }
 
   void _shareFile(String filePath) async {
-    try {
-      final file = File(filePath);
-
-      // Cek apakah file exists
-      if (!await file.exists()) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('File tidak ditemukan')),
-        );
-        return;
-      }
-
-      // Coba beberapa cara sharing
-      await _shareFileWithMultipleMethods(file);
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error berbagi file: $e')),
-      );
-    }
-  }
-
-  Future<void> _shareFileWithMultipleMethods(File file) async {
-    try {
-      // Method 1: Share with proper MIME type
-      final xFile = XFile(
-        file.path,
-        mimeType: 'text/csv',
-        name: file.path.split('/').last,
-      );
-
-      await Share.shareXFiles(
-        [xFile],
-        text: 'File Hasil Literasi Numerasi',
-        subject: 'Hasil Literasi Numerasi - ${file.path.split('/').last}',
-      );
-    } catch (e) {
-      // Method 2: Fallback - share as generic file
+    if (!kIsWeb) {
       try {
-        await Share.shareXFiles(
-          [XFile(file.path)],
-          text:
-              'File Hasil Literasi Numerasi\n\nCatatan: File ini adalah dokumen CSV. Bisa dibuka dengan Excel atau aplikasi spreadsheet lainnya.',
+        final file = File(filePath);
+
+        if (!await file.exists()) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('File tidak ditemukan')),
+          );
+          return;
+        }
+
+        final xFile = XFile(
+          file.path,
+          mimeType: 'text/csv',
+          name: file.path.split('/').last,
         );
-      } catch (e2) {
-        // Method 3: Copy to clipboard as alternative
-        await _copyPath(file.path);
+
+        await Share.shareXFiles(
+          [xFile],
+          text: 'File Hasil Literasi Numerasi',
+          subject: 'Hasil Literasi Numerasi - ${file.path.split('/').last}',
+        );
+      } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Path file telah disalin ke clipboard. Anda bisa menggunakan file manager untuk mencari dan membagikan file.'),
-            duration: Duration(seconds: 5),
-          ),
+          SnackBar(content: Text('Error berbagi file: $e')),
         );
       }
     }
@@ -461,7 +485,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Total ${users.length} siswa • Tap tombol ⬇ di AppBar untuk download semua hasil',
+                      'Total ${users.length} siswa • Tap tombol ⬇ di AppBar untuk download semua hasil${kIsWeb ? ' (akan tersimpan di Downloads)' : ''}',
                       style: TextStyle(
                         color: Colors.blue.shade700,
                         fontSize: 13,
