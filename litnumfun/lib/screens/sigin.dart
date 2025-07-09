@@ -14,7 +14,7 @@ class _SiginState extends State<Sigin> {
   final TextEditingController _controller = TextEditingController();
   final ApiService apiService = ApiService(
       baseUrl:
-          'https://litnum-backend.vercel.app/api/v1'); // Ganti dengan URL backend kamu
+          'https://backup-litnumfun.vercel.app/api/v1'); // Ganti dengan URL backend kamu
   bool _isLoading = false;
   String? _errorMessage;
 

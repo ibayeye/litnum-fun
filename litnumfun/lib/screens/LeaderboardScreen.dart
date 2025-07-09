@@ -40,7 +40,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     });
 
     try {
-      const url = 'https://litnum-backend.vercel.app/api/v1/export/all';
+      const url = 'https://backup-litnumfun.vercel.app/api/v1/export/all';
 
       // Tampilkan loading
       ScaffoldMessenger.of(context).showSnackBar(
@@ -248,7 +248,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     try {
       final encodedName = Uri.encodeComponent(name);
       final url =
-          'https://litnum-backend.vercel.app/api/v1/export/$encodedName';
+          'https://backup-litnumfun.vercel.app/api/v1/export/$encodedName';
 
       // Tampilkan loading
       ScaffoldMessenger.of(context).showSnackBar(
@@ -405,7 +405,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
   Future<void> fetchAllResults() async {
     try {
       final response = await http.get(
-        Uri.parse('https://litnum-backend.vercel.app/api/v1/allResult'),
+        Uri.parse('https://backup-litnumfun.vercel.app/api/v1/allResult'),
       );
 
       if (response.statusCode == 200) {
