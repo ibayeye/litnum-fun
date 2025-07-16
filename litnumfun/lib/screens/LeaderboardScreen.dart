@@ -56,7 +56,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
     if (confirmed != true) return;
 
-    final url = 'https://backup-litnumfun.vercel.app /api/v1/deleteUser/${id}';
+    final url = 'https://backup-litnumfun.vercel.app/api/v1/deleteUser/${id}';
 
     final response = await http.delete(Uri.parse(url));
     if (response.statusCode == 200) {
@@ -579,13 +579,26 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                               ),
                               subtitle: Text(
                                   'Skor: ${user['allResult'].toStringAsFixed(2)}%'),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.download,
-                                    color: Colors.blue),
-                                tooltip: 'Download hasil ${user['name']}',
-                                onPressed: () {
-                                  _deleteUser(user['_id'] ?? '');
-                                },
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.download,
+                                        color: Colors.blue),
+                                    tooltip: 'Download hasil ${user['name']}',
+                                    onPressed: () {
+                                      _downloadUserResult(user['name']);
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red),
+                                    tooltip: 'Hapus ${user['name']}',
+                                    onPressed: () {
+                                      _deleteUser(user['_id']);
+                                    },
+                                  ),
+                                ],
                               ),
                             ),
                           );
