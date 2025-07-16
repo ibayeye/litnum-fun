@@ -33,6 +33,50 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
     fetchAllResults();
   }
 
+  void _deleteUser(String id) async {
+    print("Deleting user with id: $id"); // Debugging
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Konfirmasi Hapus'),
+        content: const Text('Apakah Anda yakin ingin menghapus pengguna ini?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    final url = 'http://localhost:5000/api/v1/deleteUser/${id}';
+
+    final response = await http.delete(Uri.parse(url));
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Pengguna berhasil dihapus'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      fetchAllResults(); // refresh list
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Gagal menghapus pengguna'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   // Download semua hasil siswa - Universal function
   void _downloadAllResults() async {
     setState(() {
@@ -407,6 +451,8 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
       final response = await http.get(
         Uri.parse('https://backup-litnumfun.vercel.app/api/v1/allResult'),
       );
+      // print('Status code: ${response.statusCode}');
+      // print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         setState(() {
@@ -538,7 +584,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                                     color: Colors.blue),
                                 tooltip: 'Download hasil ${user['name']}',
                                 onPressed: () {
-                                  _downloadUserResult(user['name']);
+                                  _deleteUser(user['_id'] ?? '');
                                 },
                               ),
                             ),
