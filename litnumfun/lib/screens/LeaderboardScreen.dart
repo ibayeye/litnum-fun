@@ -56,7 +56,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
     if (confirmed != true) return;
 
-    final url = 'http://localhost:5000/api/v1/deleteUser/${id}';
+    final url = 'https://litnum-backend.vercel.app/api/v1/deleteUser/${id}';
 
     final response = await http.delete(Uri.parse(url));
     if (response.statusCode == 200) {
