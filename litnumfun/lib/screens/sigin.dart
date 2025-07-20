@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:litnumfun/api_services.dart';
 import 'package:litnumfun/screens/home.dart';
+import 'package:litnumfun/screens/login_admin.dart';
 
 class Sigin extends StatefulWidget {
   const Sigin({super.key});
@@ -73,7 +74,6 @@ class _SiginState extends State<Sigin> {
               'assets/images/siginbg-new.svg',
               fit: BoxFit.cover,
             ),
-            SizedBox(height: screenHeight * 0.1),
             // const Text(
             //   'SDN 013 PASIR KALIKI BANDUNG',
             //   style: TextStyle(
@@ -107,6 +107,26 @@ class _SiginState extends State<Sigin> {
                         'Ayo Mulai',
                         style: TextStyle(color: Colors.white),
                       ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginAdmin()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(screenWidth * 0.9, screenHeight * 0.05),
+                  backgroundColor: Colors.orangeAccent,
+                ),
+                child: const Text(
+                  'Login Sebagai Admin',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ],
