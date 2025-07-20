@@ -6,34 +6,19 @@ import 'package:litnumfun/screens/ResultScreen.dart';
 import 'package:litnumfun/screens/updateAdmin.dart';
 import 'question_screen.dart';
 
-class Home extends StatefulWidget {
+class HomeUser extends StatefulWidget {
   final String name;
-  final String? nip;
-  final String? adminId;
-  final String? role; // Tambahkan parameter role
 
-  const Home({
+  const HomeUser({
     super.key,
     required this.name,
-    this.role,
-    this.nip,
-    this.adminId,
   });
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeUser> createState() => _HomeUserState();
 }
 
-class _HomeState extends State<Home> {
-  bool get isAdmin => widget.role?.toLowerCase() == 'admin';
-
-  @override
-  void initState() {
-    super.initState();
-    updatedName = widget.name;
-    updatedNip = widget.nip;
-  }
-
+class _HomeUserState extends State<HomeUser> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -41,25 +26,6 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       backgroundColor: const Color(0xFF604CC3),
-      appBar: isAdmin
-          ? AppBar(
-              title: const Text(
-                'Admin Panel',
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: const Color(0xFF604CC3),
-              elevation: 0,
-              automaticallyImplyLeading: false,
-              centerTitle: true,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.logout, color: Colors.white),
-                  onPressed: () => _showLogoutDialog(context),
-                ),
-              ],
-            )
-          : null,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -69,7 +35,7 @@ class _HomeState extends State<Home> {
               children: [
                 SizedBox(height: screenHeight * 0.04),
                 Text(
-                 'Halo, ${updatedName ?? widget.name}!',
+                  'Halo, ${widget.name}!',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 26,
@@ -85,97 +51,51 @@ class _HomeState extends State<Home> {
                 SizedBox(height: screenHeight * 0.05),
 
                 // Tampilkan konten berdasarkan role
-                if (isAdmin) ...[
-                  // Konten untuk Admin
-                  SizedBox(height: screenHeight * 0.06),
-                  _buildAdminButton(
-                    context,
-                    icon: Icons.leaderboard_rounded,
-                    label: 'Lihat Leaderboard',
-                    color: Colors.orangeAccent,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LeaderBoardScreenAdmin(),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-                  _buildAdminButton(
-                    context,
-                    icon: Icons.person,
-                    label: 'Profile Saya',
-                    color: Colors.blue,
-                    onTap: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UpdateAdminScreen(
-                            adminId: widget.adminId!,
-                            currentName: updatedName ?? widget.name,
-                            currentNip: updatedNip ?? widget.nip!,
-                          ),
-                        ),
-                      );
 
-                      if (result != null && result is Map) {
-                        setState(() {
-                          updatedName = result['name'];
-                          updatedNip = result['nip'];
-                        });
-                      }
-                    },
+                // Konten untuk User biasa
+                const Text(
+                  "Pilih salah satu kuis:",
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
                   ),
-                ] else ...[
-                  // Konten untuk User biasa
-                  const Text(
-                    "Pilih salah satu kuis:",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: screenHeight * 0.04),
-                  _buildCategoryButton(
-                      context, "Literasi", Colors.orangeAccent),
-                  SizedBox(height: screenHeight * 0.03),
-                  _buildCategoryButton(
-                      context, "Numerasi", Colors.lightBlueAccent),
-                  SizedBox(height: screenHeight * 0.06),
-                  _buildSmallButton(
-                    context,
-                    icon: Icons.bar_chart_rounded,
-                    label: 'Lihat Hasil Saya',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ResultScreen(userName: widget.name),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: screenHeight * 0.02),
-                  _buildSmallButton(
-                    context,
-                    icon: Icons.leaderboard_rounded,
-                    label: 'Lihat Leaderboard',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LeaderboardScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                  textAlign: TextAlign.center,
+                ),
                 SizedBox(height: screenHeight * 0.04),
+                _buildCategoryButton(context, "Literasi", Colors.orangeAccent),
+                SizedBox(height: screenHeight * 0.03),
+                _buildCategoryButton(
+                    context, "Numerasi", Colors.lightBlueAccent),
+                SizedBox(height: screenHeight * 0.06),
+                _buildSmallButton(
+                  context,
+                  icon: Icons.bar_chart_rounded,
+                  label: 'Lihat Hasil Saya',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ResultScreen(userName: widget.name),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                _buildSmallButton(
+                  context,
+                  icon: Icons.leaderboard_rounded,
+                  label: 'Lihat Leaderboard',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LeaderboardScreen(),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -183,9 +103,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-  String? updatedName;
-  String? updatedNip;
 
   Widget _buildCategoryButton(
       BuildContext context, String category, Color color) {

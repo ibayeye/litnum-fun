@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:litnumfun/api_services.dart';
 import 'package:litnumfun/screens/home.dart';
+import 'package:litnumfun/screens/homeUser.dart';
 import 'package:litnumfun/screens/login_admin.dart';
 
 class Sigin extends StatefulWidget {
@@ -54,7 +55,7 @@ class _SiginState extends State<Sigin> {
       Navigator.push(
         // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => Home(name: name)),
+        MaterialPageRoute(builder: (context) => HomeUser(name: name)),
       );
     }
   }

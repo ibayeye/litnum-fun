@@ -56,35 +56,18 @@ class _LoginAdminState extends State<LoginAdmin> {
         // Login berhasil - ekstrak data dari response
         final adminData = response['admin'];
         String userRole = adminData['role'] ?? 'admin';
-        String userName = adminData['name'] ?? nip;
+        String userName = adminData['name'];
+        String nip = adminData['nip'].toString(); // ubah ke String
+        String adminId = adminData['_id']; // ambil _id dari MongoDB misalnya
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => Home(
-              name: userName, // atau bisa tetap menggunakan nip jika diinginkan
+              name: userName,
+              nip: nip,
               role: userRole,
-            ),
-          ),
-        );
-      } else if (response.containsKey('success') ||
-          response.containsKey('data') ||
-          response.containsKey('token')) {
-        // Fallback untuk format response lain
-        String userRole = 'admin';
-        if (response.containsKey('data') &&
-            response['data'].containsKey('role')) {
-          userRole = response['data']['role'];
-        } else if (response.containsKey('role')) {
-          userRole = response['role'];
-        }
-
-        Navigator.pop(
-          context,
-          MaterialPageRoute(
-            builder: (context) => Home(
-              name: nip,
-              role: userRole,
+              adminId: adminId,
             ),
           ),
         );
@@ -161,7 +144,7 @@ class _LoginAdminState extends State<LoginAdmin> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    prefixIcon: const Icon(Icons.person_outline),
+                    prefixIcon: const Icon(Icons.badge_outlined),
                     filled: true,
                     fillColor: Colors.grey[50],
                   ),
